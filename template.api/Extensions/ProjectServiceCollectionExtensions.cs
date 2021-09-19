@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Text.Json;
 using template.infrastructure;
 using template.infrastructure.Entities;
 using template.infrastructure.Entities.Maps;
@@ -33,7 +34,7 @@ namespace MTL.FragileCustomer.Api
         public static IServiceCollection RegisterEntity(this IServiceCollection services)
 
         {
-            foreach (var entityType in ModelTypes.Get("MTL.FragileCustomer.Infrastructure.Entities"))
+            foreach (var entityType in ModelTypes.Get("template.infrastructure.Entities"))
             {
                 var repository = typeof(Repository<>).MakeGenericType(entityType.AsType());
                 var entityMap = typeof(EntityMap<>).MakeGenericType(entityType.AsType());

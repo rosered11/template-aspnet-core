@@ -15,7 +15,6 @@ namespace template.infrastructure.Utilities
                  & p.CustomAttributes.Any(x => x.AttributeType == typeof(GeneratedEntityAttribute))
 
             );
-
             return classes
             .Select(x => x.GetTypeInfo())
             .ToArray();

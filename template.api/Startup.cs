@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MTL.FragileCustomer.Api;
+using Sieve.Services;
+using template.infrastructure.Entities;
+using template.infrastructure.Entities.Maps;
 
 namespace template.api
 {
@@ -96,7 +99,10 @@ namespace template.api
                 .Services
 
                 .RegisterEntity()
+                // Customize builder for 1 to many for database
+                .RegisterEntity<MyEntity2, MyEntity2Map>()
                 .AddDbContext(_configuration)
+                .AddScoped<ISieveProcessor, SieveProcessor>()
                 .RegisterMapper()
                 .RegisterService(_configuration)
                 
