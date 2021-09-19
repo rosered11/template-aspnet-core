@@ -7,3 +7,4 @@
 - [How to use .pem](https://www.scottbrady91.com/C-Sharp/PEM-Loading-in-dotnet-core-and-dotnet)
 - [CSharp Read Key](https://docs.hidglobal.com/auth-service/docs/buildingapps/csharp/read-different-certificate-key-file-formats-with-c-.htm)
 - [Public, Private Key](https://www.jittagornp.me/blog/what-is-public-key-private-key/)
+- [Certificate for linux](https://andrewlock.net/creating-and-trusting-a-self-signed-certificate-on-linux-for-use-in-kestrel-and-asp-net-core/)

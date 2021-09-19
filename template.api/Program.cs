@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Net;
 using System.Reflection;
 
 namespace template.api
@@ -89,6 +90,14 @@ namespace template.api
                     options.Limits.Http2.MaxRequestHeaderFieldSize = 1048576;
                     options.Limits.MaxRequestHeaderCount = 300;
                     options.Limits.MaxRequestBufferSize = 104857600;
+                    // Configure the Url and ports to bind to
+                    // This overrides calls to UseUrls and the ASPNETCORE_URLS environment variable, but will be 
+                    // overridden if you call UseIisIntegration() and host behind IIS/IIS Express
+                    options.Listen(IPAddress.Loopback, 5000);
+                    options.Listen(IPAddress.Loopback, 5001, listenOptions =>
+                    {
+                        listenOptions.UseHttps("localhost.pfx", "1234");
+                    });
                 });
         private static Logger CreateLogger(IHost host, IConfiguration configuration)
         {

@@ -3,7 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace template.api
@@ -12,7 +14,7 @@ namespace template.api
     {
         private const string JwtBearer = "JwtBearer";
 
-        public static void AddAuthentication(this IServiceCollection services, IConfiguration configuration, ILogger logger)
+        public static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             bool isValidate = true;
 
@@ -30,7 +32,7 @@ namespace template.api
                 {
                     jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
                     {
-                        IssuerSigningKey = new X509SecurityKey(LoadCertificate(configuration, logger)),
+                        IssuerSigningKey = new X509SecurityKey(LoadCertificate(configuration)),
 
                         ValidateIssuer = isValidate,
                         ValidIssuer = configuration["Authentication:ValidIssuer"],
@@ -42,31 +44,16 @@ namespace template.api
                 });
         }
 
-        public static X509Certificate2 LoadCertificate(IConfiguration configuration, ILogger logger)
+        public static X509Certificate2 LoadCertificate(IConfiguration configuration)
         {
             string source = configuration["Certification:Source"] ?? "file";
             switch (source?.ToLower())
             {
                 case "file":
-                    string certPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "contoso.com.crt");
-                    string keyPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "contoso.com.key");
-                    logger.Error($"======================== Path cert ==> {certPath}");
-                    string path =  System.IO.File.ReadAllText(certPath);
-
                     try
                     {
-                        return new X509Certificate2(path, "p@ssw0rd2");
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception("No certificate found in the specified location.", ex);
-                    }
-                case "env":
-                    try
-                    {
-                        var base64 = configuration["Certification:Base64"];
-                        var cert = Convert.FromBase64String(base64);
-                        return new X509Certificate2(cert, configuration["Certification:Secret"]);
+                        var cert = new X509Certificate2("localhost.pfx", "1234");
+                        return cert;
                     }
                     catch (Exception ex)
                     {
@@ -79,6 +66,8 @@ namespace template.api
                     {
                         store.Open(OpenFlags.ReadOnly);
                         var count = store.Certificates.Count;
+                        Console.WriteLine($"count ==> {count}");
+                        Console.WriteLine(JsonSerializer.Serialize(store.Certificates));
                         var certCollection = store.Certificates.Find(X509FindType.FindByThumbprint, Regex.Replace(thumbPrint, @"[^\da-fA-F]", string.Empty).ToUpper(), false);
                         if (certCollection.Count == 0)
                         {

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
@@ -38,10 +39,10 @@ namespace template.api
                 _logger = Log.ForContext<CustomRequestLoggingMiddleware>();
             }
 
-            public async Task Invoke(HttpContext httpContext)
+            public async Task Invoke(HttpContext httpContext, IConfiguration configuration)
             {
                 var logger = _logger ?? Log.ForContext<CustomRequestLoggingMiddleware>();
-                var level = GetLevel(httpContext, null);
+                var level = GetLevel(configuration);
                 if (httpContext == null) throw new ArgumentNullException(nameof(httpContext));
 
                 var request = httpContext.Request;
@@ -97,16 +98,6 @@ namespace template.api
                             break;
                     }
                 }
-
-                if (request.RouteValues.ContainsKey("proposalKey"))
-                {
-                    properties.Add(new LogEventProperty("Key", new ScalarValue(request.RouteValues["proposalKey"])));
-                }
-
-                if (request.RouteValues.ContainsKey("applicationKey"))
-                {
-                    properties.Add(new LogEventProperty("Key", new ScalarValue(request.RouteValues["applicationKey"])));
-                }
             }
 
             static void SetPropertyResponseLog(HttpContext httpContext, List<LogEventProperty> properties)
@@ -144,19 +135,20 @@ namespace template.api
                 return requestPath;
             }
 
-            static LogEventLevel GetLevel(HttpContext httpContext, Exception exception)
+            static LogEventLevel GetLevel(IConfiguration configuration)
             {
-                if (exception == null && httpContext.Response.StatusCode <= 499)
-                {
-                    if (IsHealthCheckEndpoint(httpContext))
-                    {
-                        return LogEventLevel.Verbose;
-                    }
+                // if (exception == null && httpContext.Response.StatusCode <= 499)
+                // {
+                //     if (IsHealthCheckEndpoint(httpContext))
+                //     {
+                //         return LogEventLevel.Verbose;
+                //     }
 
-                    return LogEventLevel.Information;
-                }
+                //     return LogEventLevel.Information;
+                // }
 
-                return LogEventLevel.Error;
+                // return LogEventLevel.Error;
+                return Enum.Parse<LogEventLevel>(configuration.GetValue<string>("Serilog:MinimumLevel:Default"));
             }
 
             static bool IsHealthCheckEndpoint(HttpContext httpContext)

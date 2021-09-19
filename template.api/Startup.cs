@@ -4,10 +4,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using MTL.FragileCustomer.Api;
-using Serilog;
 
 namespace template.api
 {
@@ -53,11 +50,9 @@ namespace template.api
     //         });
     //     }
     // }
-/* ================================= */
+    /* ================================= */
     public class Startup
     {
-        private readonly ILogger _logger;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Startup"/> class.
         /// </summary>
@@ -67,8 +62,6 @@ namespace template.api
         /// Staging or Production by default. See http://docs.asp.net/en/latest/fundamentals/environments.html</param>
         public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
-            _logger = Log.ForContext<Startup>();
-            _logger.Error("=========================");
             _configuration = configuration;
             _webHostEnvironment = webHostEnvironment;
         }
@@ -108,9 +101,8 @@ namespace template.api
                 .RegisterService(_configuration)
                 
             ;
-                
 
-            services.AddAuthentication(_configuration, _logger);
+            services.AddAuthentication(_configuration);
         }
 
         /// <summary>
