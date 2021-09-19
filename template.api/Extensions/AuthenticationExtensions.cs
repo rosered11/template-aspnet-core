@@ -34,10 +34,10 @@ namespace template.api
                     {
                         IssuerSigningKey = new X509SecurityKey(LoadCertificate(configuration)),
 
-                        ValidateIssuer = isValidate,
-                        ValidIssuer = configuration["Authentication:ValidIssuer"],
-                        ValidateAudience = isValidate,
-                        ValidAudience = configuration["Authentication:ValidAudience"],
+                        ValidateIssuer = false,
+                        //ValidIssuer = "http://localhost:5002",//configuration["Authentication:ValidIssuer"],
+                        ValidateAudience = false,
+                        //ValidAudience = "",//configuration["Authentication:ValidAudience"],
                         ValidateLifetime = isValidate,
                         ClockSkew = TimeSpan.FromMinutes(5)
                     };
