@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\template.infrastructure\template.infrastructure.csproj" />
+    <ProjectReference Include="..\template.domain\template.domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
