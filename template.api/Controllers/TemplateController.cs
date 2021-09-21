@@ -30,7 +30,9 @@ namespace template.api.Controllers
         public async Task<IActionResult> PostEncryptData([FromBody] DTO.Template data)
         {
             var certificate = AuthenticationService.LoadCertificate(_config);
-            var base64Data = AesCipher.Encrypt(data.Data, "1234", out byte[] salt, out byte[] iv);
+            // var salt = AesCipher.Generate256BitsOfRandomEntropy();
+            // var iv = AesCipher.Generate256BitsOfRandomEntropy();
+            var base64Data = AesCipher.Encrypt(data.Data, "1234",out byte[] salt,out byte[] iv);
             Console.WriteLine($"Aes encrypt: ==> {base64Data}");
             
             var saltText = Convert.ToBase64String(salt);
@@ -39,6 +41,8 @@ namespace template.api.Controllers
             var a = AesCipher.Decrypt(base64Data, "1234", saltText, ivText);
             Console.WriteLine($"Aes decript: ==> {a}");
 
+
+            RandomGenerator.GenerateKeyFromPassword("1234");
             return Ok();
         }
 
