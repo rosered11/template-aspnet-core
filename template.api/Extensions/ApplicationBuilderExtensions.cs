@@ -91,10 +91,10 @@ namespace template.api
                 {
                     switch (request.Path)
                     {
-                        case "/api/v1/mypost":
+                        case "/api/v1.0/templates":
                             string requestBody = await ReadRequestBodyAsync(request);
                             // Implement something
-
+                            Console.WriteLine(requestBody);
                             break;
                     }
                 }

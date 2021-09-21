@@ -34,10 +34,10 @@ namespace template.api
                     {
                         IssuerSigningKey = new X509SecurityKey(LoadCertificate(configuration)),
 
-                        ValidateIssuer = false,
-                        //ValidIssuer = "http://localhost:5002",//configuration["Authentication:ValidIssuer"],
-                        ValidateAudience = false,
-                        //ValidAudience = "",//configuration["Authentication:ValidAudience"],
+                        ValidateIssuer = isValidate,
+                        ValidIssuer = "http://localhost/auth",//configuration["Authentication:ValidIssuer"],
+                        ValidateAudience = isValidate,
+                        ValidAudience = "http://localhost/audian",//configuration["Authentication:ValidAudience"],
                         ValidateLifetime = isValidate,
                         ClockSkew = TimeSpan.FromMinutes(5)
                     };
@@ -65,9 +65,6 @@ namespace template.api
                     using (var store = new X509Store(StoreName.My, StoreLocation.LocalMachine))
                     {
                         store.Open(OpenFlags.ReadOnly);
-                        var count = store.Certificates.Count;
-                        Console.WriteLine($"count ==> {count}");
-                        Console.WriteLine(JsonSerializer.Serialize(store.Certificates));
                         var certCollection = store.Certificates.Find(X509FindType.FindByThumbprint, Regex.Replace(thumbPrint, @"[^\da-fA-F]", string.Empty).ToUpper(), false);
                         if (certCollection.Count == 0)
                         {
