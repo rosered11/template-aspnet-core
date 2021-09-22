@@ -2,8 +2,9 @@ namespace template.api.DTO
 {
     public class TemplateEncrypt
     {
-        public string base64Data { get; set; }
-        public string salt { get; set; }
-        public string iv { get; set; }
+        public string CipherData { get; set; }
+        public string Salt { get; set; }
+        public string Iv { get; set; }
+        public string CipherKey { get; set; }
     }
 }
